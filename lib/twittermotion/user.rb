@@ -53,10 +53,10 @@ module Twitter
     def lock_friend_ids(options = {})
       url = NSURL.URLWithString("http://api.twitter.com/1.1/friends/ids.json")
       request = TWRequest.alloc.initWithURL(url, parameters:options, requestMethod:TWRequestMethodGET)
-      ns_url_request = request.signedURLRequest
+      # ns_url_request = request.signedURLRequest
       ns_url_response_ptr = Pointer.new(:object)
       error_ptr = Pointer.new(:object)
-      ns_data = NSURLConnection.sendSynchronousRequest(ns_url_request, returningResponse:ns_url_response_ptr, error: error_ptr)
+      ns_data = NSURLConnection.sendSynchronousRequest(request, returningResponse:ns_url_response_ptr, error: error_ptr)
       return BubbleWrap::JSON.parse(ns_data)
     end
 
