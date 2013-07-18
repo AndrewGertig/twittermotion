@@ -35,5 +35,47 @@ module Twitter
         end
       })
     end
+
+    # Returns up to 5,000 friend ids, have to implement Cursors to access multiple pages of results
+    def friend_ids(options = {}, &block)
+      url = NSURL.URLWithString("http://api.twitter.com/1.1/friends/ids.json")
+      request = TWRequest.alloc.initWithURL(url, parameters:options, requestMethod:TWRequestMethodGET)
+      request.account = self.ac_account
+      request.performRequestWithHandler(lambda {|response_data, url_response, error|
+        if !response_data
+          block.call(nil, error)
+        else
+          block.call(BubbleWrap::JSON.parse(response_data), nil)
+        end
+      })
+    end
+
+    # Returns up to 5,000 follower ids, have to implement Cursors to access multiple pages of results
+    def follower_ids(options = {}, &block)
+      url = NSURL.URLWithString("http://api.twitter.com/1.1/followers/ids.json")
+      request = TWRequest.alloc.initWithURL(url, parameters:options, requestMethod:TWRequestMethodGET)
+      request.account = self.ac_account
+      request.performRequestWithHandler(lambda {|response_data, url_response, error|
+        if !response_data
+          block.call(nil, error)
+        else
+          block.call(BubbleWrap::JSON.parse(response_data), nil)
+        end
+      })
+    end
+
+    def users(options = {}, &block)
+      url = NSURL.URLWithString("http://api.twitter.com/1.1/users/lookup.json")
+      request = TWRequest.alloc.initWithURL(url, parameters:options, requestMethod:TWRequestMethodGET)
+      request.account = self.ac_account
+      request.performRequestWithHandler(lambda {|response_data, url_response, error|
+        if !response_data
+          block.call(nil, error)
+        else
+          block.call(BubbleWrap::JSON.parse(response_data), nil)
+        end
+      })
+    end
+
   end
 end
