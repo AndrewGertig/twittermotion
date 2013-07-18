@@ -107,7 +107,7 @@ module Twitter
     # This method will lock the thread it is called in because it is Synchronous
     # Returns up to 100 hydrated users can call it 180 times in a 15 minute span
     def users(*args)
-      options = { user_id: args }
+      options = { user_id: args.join(",") }
       url = NSURL.URLWithString("http://api.twitter.com/1.1/users/lookup.json")
       request = TWRequest.alloc.initWithURL(url, parameters:options, requestMethod:TWRequestMethodGET)
       request.account = self.ac_account
