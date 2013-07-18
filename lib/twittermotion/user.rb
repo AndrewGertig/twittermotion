@@ -50,6 +50,16 @@ module Twitter
       })
     end
 
+    def lock_friend_ids(options = {})
+      url = NSURL.URLWithString("http://api.twitter.com/1.1/friends/ids.json")
+      request = TWRequest.alloc.initWithURL(url, parameters:options, requestMethod:TWRequestMethodGET)
+      ns_url_request = request.signedURLRequest
+      ns_url_response_ptr = Pointer.new(:object)
+      error_ptr = Pointer.new(:object)
+      ns_data = NSURLConnection.sendSynchronousRequest(ns_url_request, returningResponse:ns_url_response, error: error_ptr)
+      return BubbleWrap::JSON.parse(ns_data)
+    end
+
     # Returns up to 5,000 follower ids, have to implement Cursors to access multiple pages of results
     def follower_ids(options = {}, &block)
       url = NSURL.URLWithString("http://api.twitter.com/1.1/followers/ids.json")
