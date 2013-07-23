@@ -133,26 +133,28 @@ module Twitter
     # @overload unfollow(*users, options)
     #   @param users [Enumerable<Integer, String, Twitter::User>] A collection of Twitter user IDs, screen names, or objects.
     #   @param options [Hash] A customizable set of options.
-    def unfollow_blocked(*args)
-      # threaded_user_objects_from_response(:post, "/1.1/friendships/destroy.json", args)
-      # options = { user_id: args.join(",") }
-      options = { screen_name: args}
-      url = NSURL.URLWithString("http://api.twitter.com/1.1/friendships/destroy.json")
-      request = TWRequest.alloc.initWithURL(url, parameters:options, requestMethod:TWRequestMethodGET)
-      request.account = self.ac_account
-      ns_url_request = request.signedURLRequest
-      ns_url_response_ptr = Pointer.new(:object)
-      error_ptr = Pointer.new(:object)
-      ns_data = NSURLConnection.sendSynchronousRequest(ns_url_request, returningResponse:ns_url_response_ptr, error: error_ptr)
-      return BubbleWrap::JSON.parse(ns_data)
-    end
 
     def unfollow(options = {}, &block)
-      puts "TM Unfollow options: #{options}"
       url = NSURL.URLWithString("http://api.twitter.com/1.1/friendships/destroy.json")
       request = TWRequest.alloc.initWithURL(url, parameters:options, requestMethod:TWRequestMethodPOST)
       request.account = self.ac_account
-      request.signedURLRequest
+      # request.signedURLRequest
+
+      request.performRequestWithHandler(lambda {|response_data, url_response, error|
+
+        if !response_data
+          block.call(nil, error)
+        else
+          block.call(BubbleWrap::JSON.parse(response_data), nil)
+        end
+      })
+    end
+
+    def follow(options = {}, &block)
+      url = NSURL.URLWithString("http://api.twitter.com/1.1/friendships/create.json")
+      request = TWRequest.alloc.initWithURL(url, parameters:options, requestMethod:TWRequestMethodPOST)
+      request.account = self.ac_account
+      # request.signedURLRequest
 
       request.performRequestWithHandler(lambda {|response_data, url_response, error|
 
