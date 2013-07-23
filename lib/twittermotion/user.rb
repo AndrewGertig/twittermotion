@@ -24,7 +24,7 @@ module Twitter
     # user.get_timeline(include_entities: 1) do |hash, ns_error|
     # end
     def get_timeline(options = {}, &block)
-      url = NSURL.URLWithString("http://api.twitter.com/1/statuses/home_timeline.json")
+      url = NSURL.URLWithString("http://api.twitter.com/1.1/statuses/home_timeline.json")
       request = TWRequest.alloc.initWithURL(url, parameters:options, requestMethod:TWRequestMethodGET)
       request.account = self.ac_account
       request.performRequestWithHandler(lambda {|response_data, url_response, error|
@@ -119,6 +119,46 @@ module Twitter
     end
 
 
+    # Allows the authenticating user to unfollow the specified users
+    #
+    # @see https://dev.twitter.com/docs/api/1.1/post/friendships/destroy
+    # @rate_limited No
+    # @authentication Requires user context
+    # @raise [Twitter::Error::Unauthorized] Error raised when supplied user credentials are not valid.
+    # @return [Array<Twitter::User>] The unfollowed users.
+    # @overload unfollow(*users)
+    #   @param users [Enumerable<Integer, String, Twitter::User>] A collection of Twitter user IDs, screen names, or objects.
+    #   @example Unfollow @sferik
+    #     Twitter.unfollow('sferik')
+    # @overload unfollow(*users, options)
+    #   @param users [Enumerable<Integer, String, Twitter::User>] A collection of Twitter user IDs, screen names, or objects.
+    #   @param options [Hash] A customizable set of options.
+    def unfollow_blocked(*args)
+      # threaded_user_objects_from_response(:post, "/1.1/friendships/destroy.json", args)
+      # options = { user_id: args.join(",") }
+      options = { screen_name: args}
+      url = NSURL.URLWithString("http://api.twitter.com/1.1/friendships/destroy.json")
+      request = TWRequest.alloc.initWithURL(url, parameters:options, requestMethod:TWRequestMethodGET)
+      request.account = self.ac_account
+      ns_url_request = request.signedURLRequest
+      ns_url_response_ptr = Pointer.new(:object)
+      error_ptr = Pointer.new(:object)
+      ns_data = NSURLConnection.sendSynchronousRequest(ns_url_request, returningResponse:ns_url_response_ptr, error: error_ptr)
+      return BubbleWrap::JSON.parse(ns_data)
+    end
+
+    def unfollow(options = {}, &block)
+      url = NSURL.URLWithString("http://api.twitter.com/1.1/friendships/destroy.json")
+      request = TWRequest.alloc.initWithURL(url, parameters:options, requestMethod:TWRequestMethodPOST)
+      request.account = self.ac_account
+      request.performRequestWithHandler(lambda {|response_data, url_response, error|
+        if !response_data
+          block.call(nil, error)
+        else
+          block.call(BubbleWrap::JSON.parse(response_data), nil)
+        end
+      })
+    end
 
   end
 end
