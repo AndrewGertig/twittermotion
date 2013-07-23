@@ -148,10 +148,14 @@ module Twitter
     end
 
     def unfollow(options = {}, &block)
+      puts "TM Unfollow options: #{options}"
       url = NSURL.URLWithString("http://api.twitter.com/1.1/friendships/destroy.json")
       request = TWRequest.alloc.initWithURL(url, parameters:options, requestMethod:TWRequestMethodPOST)
       request.account = self.ac_account
+      request.signedURLRequest
+
       request.performRequestWithHandler(lambda {|response_data, url_response, error|
+
         if !response_data
           block.call(nil, error)
         else
