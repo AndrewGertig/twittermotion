@@ -98,11 +98,11 @@ module Twitter
       puts "error_ptr"
       error_ptr = Pointer.new(:object)
 
-      params = { cursor: cursor }
+      options = { cursor: cursor }
 
-      # while (params[:cursor] != 0)
+      # while (options[:cursor] != 0)
         puts "Inside While Loop"
-        request = TWRequest.alloc.initWithURL(url, parameters:params, requestMethod:TWRequestMethodGET)
+        request = TWRequest.alloc.initWithURL(url, parameters:options, requestMethod:TWRequestMethodGET)
         puts "Set account #{request}"
         request.account = account
         puts "signedURLRequest #{request.account}"
@@ -120,7 +120,7 @@ module Twitter
         puts "Batch of IDs"
         puts json_data[:ids]
 
-        params[:cursor] = json_data[:next_cursor]
+        options[:cursor] = json_data[:next_cursor]
         all_ids.push(json_data[:ids])
       # end
 
@@ -150,7 +150,7 @@ module Twitter
       ns_url_request = request.signedURLRequest
       ns_url_response_ptr = Pointer.new(:object)
       error_ptr = Pointer.new(:object)
-      ns_data = NSURLConnection.sendSynchronousRequest(ns_url_request, returningResponse:ns_url_response_ptr, error: error_ptr)
+      ns_data = NSURLConnection.sendSynchronousRequest(ns_url_request, returningResponse:ns_url_response_ptr, error:error_ptr)
       return BubbleWrap::JSON.parse(ns_data)
     end
 
