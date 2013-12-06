@@ -94,6 +94,7 @@ module Twitter
       params = { cursor: cursor }
 
       puts "PARAMS"
+      puts params["cursor"]
       puts params
 
       while (params[:cursor] != 0)
@@ -107,13 +108,13 @@ module Twitter
         json_data = BubbleWrap::JSON.parse(ns_data)
 
         puts "Next Cursor"
-        puts json_data[:next_cursor]
+        puts json_data["next_cursor"]
 
         puts "Batch of IDs"
-        puts json_data[:ids]
+        puts json_data["ids"]
 
-        params[:cursor] = json_data["next_cursor"]
-        all_ids.push(json_data[:ids])
+        params["cursor"] = json_data["next_cursor"]
+        all_ids.push(json_data["ids"])
       end
 
       return all_ids
