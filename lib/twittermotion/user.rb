@@ -87,8 +87,19 @@ module Twitter
       return BubbleWrap::JSON.parse(ns_data)
     end
 
+    # def all_friend_ids(options = {cursor: "-1"})
+    #   url = NSURL.URLWithString("http://api.twitter.com/1.1/friends/ids.json")
+    #   request = TWRequest.alloc.initWithURL(url, parameters:options, requestMethod:TWRequestMethodGET)
+    #   request.account = self.ac_account
+    #   ns_url_request = request.signedURLRequest
+    #   ns_url_response_ptr = Pointer.new(:object)
+    #   error_ptr = Pointer.new(:object)
+    #   ns_data = NSURLConnection.sendSynchronousRequest(ns_url_request, returningResponse:ns_url_response_ptr, error: error_ptr)
+    #   return BubbleWrap::JSON.parse(ns_data)
+    # end
+
     def all_friend_ids(options = {})
-      cursor = -1
+      cursor = "-1"
       all_ids = []
       account = self.ac_account
       url = NSURL.URLWithString("http://api.twitter.com/1.1/friends/ids.json")
@@ -120,7 +131,7 @@ module Twitter
         puts "Batch of IDs"
         puts json_data[:ids]
 
-        options[:cursor] = json_data[:next_cursor]
+        options[:cursor] = json_data[:next_cursor_str]
         all_ids.push(json_data[:ids])
       # end
 
