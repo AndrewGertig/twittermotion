@@ -94,7 +94,7 @@ module Twitter
       params = { cursor: cursor }
 
       puts "PARAMS"
-      puts params["cursor"]
+      puts params[:cursor]
       puts params
 
       while (params[:cursor] != 0)
@@ -104,17 +104,19 @@ module Twitter
         ns_url_request = request.signedURLRequest
         ns_url_response_ptr = Pointer.new(:object)
         error_ptr = Pointer.new(:object)
+
+        puts "About to send it"
         ns_data = NSURLConnection.sendSynchronousRequest(ns_url_request, returningResponse:ns_url_response_ptr, error: error_ptr)
         json_data = BubbleWrap::JSON.parse(ns_data)
 
         puts "Next Cursor"
-        puts json_data["next_cursor"]
+        puts json_data[:next_cursor]
 
         puts "Batch of IDs"
-        puts json_data["ids"]
+        puts json_data[:ids]
 
-        params["cursor"] = json_data["next_cursor"]
-        all_ids.push(json_data["ids"])
+        params[:cursor] = json_data[:next_cursor]
+        all_ids.push(json_data[:ids])
       end
 
       return all_ids
