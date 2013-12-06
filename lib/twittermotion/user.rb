@@ -87,6 +87,29 @@ module Twitter
       return BubbleWrap::JSON.parse(ns_data)
     end
 
+    def all_friend_ids(options = {})
+      cursor = -1
+      all_ids = []
+
+      params = { cursor: cursor }.merge(options)
+
+      while (cursor != 0)
+        params[:cursor] = cursor
+        url = NSURL.URLWithString("http://api.twitter.com/1.1/friends/ids.json")
+        request = TWRequest.alloc.initWithURL(url, parameters:params, requestMethod:TWRequestMethodGET)
+        request.account = self.ac_account
+        ns_url_request = request.signedURLRequest
+        ns_url_response_ptr = Pointer.new(:object)
+        error_ptr = Pointer.new(:object)
+        ns_data = NSURLConnection.sendSynchronousRequest(ns_url_request, returningResponse:ns_url_response_ptr, error: error_ptr)
+        json_data = BubbleWrap::JSON.parse(ns_data)
+        cursor = json_data["next_cursor"]
+        all_ids.push(json_data[:ids])
+      end
+
+      return all_ids
+    end
+
     # This method will lock the thread it is called in because it is Synchronous
     # Returns up to 5,000 follower ids, have to implement Cursors to access multiple pages of results
     def follower_ids(options = {})
