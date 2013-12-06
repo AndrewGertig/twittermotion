@@ -133,10 +133,13 @@ module Twitter
       ids_obj = { ids: [] }
       url = NSURL.URLWithString("http://api.twitter.com/1.1/followers/ids.json")
 
-      while options[:cursor].to_i != 0
+      # while options[:cursor].to_i != 0
+      15.times do
         json_data = get(url, options)
         options[:cursor] = json_data[:next_cursor_str]
         ids_obj[:ids] = ids_obj[:ids] + json_data[:ids]
+        puts "Cursor: #{options[:cursor]}"
+        break if options[:cursor].to_i == 0
       end
 
       return ids_obj
