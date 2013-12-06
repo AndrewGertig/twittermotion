@@ -103,9 +103,9 @@ module Twitter
       while (params[:cursor] != 0)
         puts "Inside While Loop"
         request = TWRequest.alloc.initWithURL(url, parameters:params, requestMethod:TWRequestMethodGET)
-        puts "Set account"
+        puts "Set account #{request}"
         request.account = account
-        puts "signedURLRequest"
+        puts "signedURLRequest #{request.account}"
         ns_url_request = request.signedURLRequest
 
         puts "About to send it"
