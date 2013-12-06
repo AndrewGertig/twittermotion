@@ -91,10 +91,12 @@ module Twitter
       cursor = -1
       all_ids = []
 
-      params = { cursor: cursor }.merge(options)
+      params = { cursor: cursor }
 
-      while (cursor != 0)
-        params[:cursor] = cursor
+      ap "PARAMS"
+      ap params
+
+      while (params[:cursor] != 0)
         url = NSURL.URLWithString("http://api.twitter.com/1.1/friends/ids.json")
         request = TWRequest.alloc.initWithURL(url, parameters:params, requestMethod:TWRequestMethodGET)
         request.account = self.ac_account
@@ -103,7 +105,14 @@ module Twitter
         error_ptr = Pointer.new(:object)
         ns_data = NSURLConnection.sendSynchronousRequest(ns_url_request, returningResponse:ns_url_response_ptr, error: error_ptr)
         json_data = BubbleWrap::JSON.parse(ns_data)
-        cursor = json_data["next_cursor"]
+
+        ap "Next Cursor"
+        ap json_data[:next_cursor]
+
+        ap "Batch of IDs"
+        ap json_data[:ids]
+
+        params[:cursor] = json_data["next_cursor"]
         all_ids.push(json_data[:ids])
       end
 
