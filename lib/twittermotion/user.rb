@@ -93,11 +93,8 @@ module Twitter
 
       params = { cursor: cursor }
 
-      puts "PARAMS"
-      puts params[:cursor]
-      puts params
-
       while (params[:cursor] != 0)
+        puts "Inside While Loop"
         url = NSURL.URLWithString("http://api.twitter.com/1.1/friends/ids.json")
         request = TWRequest.alloc.initWithURL(url, parameters:params, requestMethod:TWRequestMethodGET)
         request.account = self.ac_account
