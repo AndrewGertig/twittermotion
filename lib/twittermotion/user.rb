@@ -93,8 +93,8 @@ module Twitter
 
       params = { cursor: cursor }
 
-      ap "PARAMS"
-      ap params
+      puts "PARAMS"
+      puts params
 
       while (params[:cursor] != 0)
         url = NSURL.URLWithString("http://api.twitter.com/1.1/friends/ids.json")
@@ -106,11 +106,11 @@ module Twitter
         ns_data = NSURLConnection.sendSynchronousRequest(ns_url_request, returningResponse:ns_url_response_ptr, error: error_ptr)
         json_data = BubbleWrap::JSON.parse(ns_data)
 
-        ap "Next Cursor"
-        ap json_data[:next_cursor]
+        puts "Next Cursor"
+        puts json_data[:next_cursor]
 
-        ap "Batch of IDs"
-        ap json_data[:ids]
+        puts "Batch of IDs"
+        puts json_data[:ids]
 
         params[:cursor] = json_data["next_cursor"]
         all_ids.push(json_data[:ids])
