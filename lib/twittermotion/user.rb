@@ -100,7 +100,7 @@ module Twitter
 
       params = { cursor: cursor }
 
-      while (params[:cursor] != 0)
+      # while (params[:cursor] != 0)
         puts "Inside While Loop"
         request = TWRequest.alloc.initWithURL(url, parameters:params, requestMethod:TWRequestMethodGET)
         puts "Set account #{request}"
@@ -110,6 +110,8 @@ module Twitter
 
         puts "About to send it"
         ns_data = NSURLConnection.sendSynchronousRequest(ns_url_request, returningResponse:ns_url_response_ptr, error: error_ptr)
+
+        puts "Json Data"
         json_data = BubbleWrap::JSON.parse(ns_data)
 
         puts "Next Cursor"
@@ -120,7 +122,7 @@ module Twitter
 
         params[:cursor] = json_data[:next_cursor]
         all_ids.push(json_data[:ids])
-      end
+      # end
 
       return all_ids
     end
