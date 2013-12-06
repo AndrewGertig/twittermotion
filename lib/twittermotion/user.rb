@@ -119,12 +119,27 @@ module Twitter
         json_data = BubbleWrap::JSON.parse(ns_data)
 
         options[:cursor] = json_data[:next_cursor_str]
-        all_ids = all_ids + (json_data[:ids])
+        all_ids = all_ids + json_data[:ids]
       end
 
       resp = { ids: all_ids }
 
       return resp
+    end
+
+    def all_follower_ids(options = {})
+      default_options = { cursor: "-1" }
+      options = default_options.merge(options)
+      ids_obj = { ids: [] }
+      url = NSURL.URLWithString("http://api.twitter.com/1.1/followers/ids.json")
+
+      while options[:cursor].to_i != 0
+        json_data = get(url, options)
+        options[:cursor] = json_data[:next_cursor_str]
+        ids_obj[:ids] = ids_obj[:ids] + json_data[:ids]
+      end
+
+      return ids_obj
     end
 
     # This method will lock the thread it is called in because it is Synchronous
