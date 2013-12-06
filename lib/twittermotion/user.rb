@@ -90,6 +90,7 @@ module Twitter
     def all_friend_ids(options = {})
       cursor = -1
       all_ids = []
+      account = self.ac_account
       url = NSURL.URLWithString("http://api.twitter.com/1.1/friends/ids.json")
 
       params = { cursor: cursor }
@@ -97,9 +98,13 @@ module Twitter
       while (params[:cursor] != 0)
         puts "Inside While Loop"
         request = TWRequest.alloc.initWithURL(url, parameters:params, requestMethod:TWRequestMethodGET)
-        request.account = self.ac_account
+        puts "Set account"
+        request.account = account
+        puts "signedURLRequest"
         ns_url_request = request.signedURLRequest
+        puts "ns url response ptr"
         ns_url_response_ptr = Pointer.new(:object)
+        puts error_ptr
         error_ptr = Pointer.new(:object)
 
         puts "About to send it"
