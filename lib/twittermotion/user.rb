@@ -135,7 +135,9 @@ module Twitter
         all_ids = all_ids + (json_data[:ids])
       end
 
-      return all_ids
+      resp = { ids: all_ids }
+
+      return resp
     end
 
     # This method will lock the thread it is called in because it is Synchronous
