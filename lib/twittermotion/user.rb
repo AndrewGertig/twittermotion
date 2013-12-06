@@ -93,6 +93,11 @@ module Twitter
       account = self.ac_account
       url = NSURL.URLWithString("http://api.twitter.com/1.1/friends/ids.json")
 
+      puts "ns url response ptr"
+      ns_url_response_ptr = Pointer.new(:object)
+      puts "error_ptr"
+      error_ptr = Pointer.new(:object)
+
       params = { cursor: cursor }
 
       while (params[:cursor] != 0)
@@ -102,10 +107,6 @@ module Twitter
         request.account = account
         puts "signedURLRequest"
         ns_url_request = request.signedURLRequest
-        puts "ns url response ptr"
-        ns_url_response_ptr = Pointer.new(:object)
-        puts error_ptr
-        error_ptr = Pointer.new(:object)
 
         puts "About to send it"
         ns_data = NSURLConnection.sendSynchronousRequest(ns_url_request, returningResponse:ns_url_response_ptr, error: error_ptr)
