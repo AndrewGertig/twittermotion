@@ -104,32 +104,19 @@ module Twitter
       account = self.ac_account
       url = NSURL.URLWithString("http://api.twitter.com/1.1/friends/ids.json")
 
-      puts "ns url response ptr"
       ns_url_response_ptr = Pointer.new(:object)
-      puts "error_ptr"
       error_ptr = Pointer.new(:object)
 
       options = { cursor: cursor }
 
       while (options[:cursor].to_i != 0)
-        puts "Inside While Loop"
         request = TWRequest.alloc.initWithURL(url, parameters:options, requestMethod:TWRequestMethodGET)
-        puts "Set account #{request}"
         request.account = account
-        puts "signedURLRequest #{request.account}"
         ns_url_request = request.signedURLRequest
 
-        puts "About to send it"
         ns_data = NSURLConnection.sendSynchronousRequest(ns_url_request, returningResponse:ns_url_response_ptr, error: error_ptr)
 
-        puts "Json Data"
         json_data = BubbleWrap::JSON.parse(ns_data)
-
-        puts "Next Cursor"
-        puts json_data[:next_cursor_str]
-
-        puts "Batch of IDs"
-        puts json_data[:ids]
 
         options[:cursor] = json_data[:next_cursor_str]
         all_ids = all_ids + (json_data[:ids])
