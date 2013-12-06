@@ -111,7 +111,7 @@ module Twitter
 
       options = { cursor: cursor }
 
-      # while (options[:cursor] != 0)
+      while (options[:cursor].to_i != 0)
         puts "Inside While Loop"
         request = TWRequest.alloc.initWithURL(url, parameters:options, requestMethod:TWRequestMethodGET)
         puts "Set account #{request}"
@@ -126,14 +126,14 @@ module Twitter
         json_data = BubbleWrap::JSON.parse(ns_data)
 
         puts "Next Cursor"
-        puts json_data[:next_cursor]
+        puts json_data[:next_cursor_str]
 
         puts "Batch of IDs"
         puts json_data[:ids]
 
         options[:cursor] = json_data[:next_cursor_str]
-        all_ids.push(json_data[:ids])
-      # end
+        all_ids = all_ids + (json_data[:ids])
+      end
 
       return all_ids
     end
