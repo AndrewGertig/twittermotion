@@ -73,6 +73,9 @@ module Twitter
       ns_url_response_ptr = Pointer.new(:object)
       error_ptr = Pointer.new(:object)
       ns_data = NSURLConnection.sendSynchronousRequest(ns_url_request, returningResponse:ns_url_response_ptr, error: error_ptr)
+
+      NSLog "[TwitterMotion] - returned ns_data: %@", ns_data.to_s
+
       return BubbleWrap::JSON.parse(ns_data)
     end
 
