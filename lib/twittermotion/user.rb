@@ -67,6 +67,9 @@ module Twitter
       request = TWRequest.alloc.initWithURL(url, parameters:options, requestMethod:TWRequestMethodGET)
       request.account = self.ac_account
       ns_url_request = request.signedURLRequest
+
+      NSLog "[TwitterMotion] - signedURLRequest: %@", ns_url_request
+
       ns_url_response_ptr = Pointer.new(:object)
       error_ptr = Pointer.new(:object)
       ns_data = NSURLConnection.sendSynchronousRequest(ns_url_request, returningResponse:ns_url_response_ptr, error: error_ptr)
@@ -138,7 +141,7 @@ module Twitter
         json_data = get(url, options)
         options[:cursor] = json_data[:next_cursor_str]
         ids_obj[:ids] = ids_obj[:ids] + json_data[:ids]
-        puts "Cursor: #{options[:cursor]}"
+        # puts "Cursor: #{options[:cursor]}"
         break if options[:cursor].to_i == 0
       end
 
