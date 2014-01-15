@@ -133,13 +133,20 @@ module Twitter
 
         json_data = BubbleWrap::JSON.parse(ns_data)
 
-        NSLog("[twittermotion] - all_friend_ids: %@", json_data)
+        # NSLog("[twittermotion] - all_friend_ids method => %@", json_data)
+        NSLog("[twittermotion] - YOU NEED TO REFACTOR THE all_friend_ids method")
 
         options[:cursor] = json_data[:next_cursor_str]
-        all_ids = all_ids + json_data[:ids]
+
+        if json_data[:ids]
+          all_ids = all_ids + json_data[:ids]
+          error_code = false
+        elsif json_data[:errors]
+          error_code = true
+        end
       end
 
-      resp = { ids: all_ids }
+      resp = { ids: all_ids, error: error_code }
 
       return resp
     end
@@ -154,7 +161,7 @@ module Twitter
       15.times do
         json_data = get(url, options)
         options[:cursor] = json_data[:next_cursor_str]
-        ids_obj[:ids] = ids_obj[:ids] + json_data[:ids]
+        ids_obj[:ids] = ids_obj[:ids] + json_data[:ids] if json_data[:ids]
         # puts "Cursor: #{options[:cursor]}"
         break if options[:cursor].to_i == 0
       end
