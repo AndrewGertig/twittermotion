@@ -90,7 +90,7 @@ module Twitter
 
     # friendships/show
     # https://api.twitter.com/1.1/friendships/show.json?source_screen_name=bert&target_screen_name=ernie
-    def friendships_show(source_screen_name, target_screen_name)
+    def friendships_show(options = {})
       url = NSURL.URLWithString("https://api.twitter.com/1.1/friendships/show.json?")
       request = TWRequest.alloc.initWithURL(url, parameters:options, requestMethod:TWRequestMethodGET)
       request.account = self.ac_account
