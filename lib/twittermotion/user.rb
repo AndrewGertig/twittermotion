@@ -87,6 +87,21 @@ module Twitter
       return BubbleWrap::JSON.parse(ns_data)
     end
 
+
+    # friendships/show
+    # https://api.twitter.com/1.1/friendships/show.json?source_screen_name=bert&target_screen_name=ernie
+    def friendships_show(source_screen_name, target_screen_name)
+      url = NSURL.URLWithString("https://api.twitter.com/1.1/friendships/show.json?")
+      request = TWRequest.alloc.initWithURL(url, parameters:options, requestMethod:TWRequestMethodGET)
+      request.account = self.ac_account
+      ns_url_request = request.signedURLRequest
+      ns_url_response_ptr = Pointer.new(:object)
+      error_ptr = Pointer.new(:object)
+      ns_data = NSURLConnection.sendSynchronousRequest(ns_url_request, returningResponse:ns_url_response_ptr, error: error_ptr)
+      return BubbleWrap::JSON.parse(ns_data)
+    end
+
+
     # def all_friend_ids(options = {cursor: "-1"})
     #   url = NSURL.URLWithString("https://api.twitter.com/1.1/friends/ids.json")
     #   request = TWRequest.alloc.initWithURL(url, parameters:options, requestMethod:TWRequestMethodGET)
