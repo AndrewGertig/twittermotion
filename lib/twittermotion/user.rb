@@ -133,6 +133,8 @@ module Twitter
 
         json_data = BubbleWrap::JSON.parse(ns_data)
 
+        NSLog("[twittermotion] - all_friend_ids: %@", json_data)
+
         options[:cursor] = json_data[:next_cursor_str]
         all_ids = all_ids + json_data[:ids]
       end
